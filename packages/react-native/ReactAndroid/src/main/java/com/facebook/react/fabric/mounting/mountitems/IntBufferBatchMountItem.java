@@ -7,7 +7,6 @@
 
 package com.facebook.react.fabric.mounting.mountitems;
 
-import static com.facebook.react.fabric.FabricUIManager.ENABLE_FABRIC_LOGS;
 import static com.facebook.react.fabric.FabricUIManager.IS_DEVELOPMENT_ENVIRONMENT;
 import static com.facebook.react.fabric.mounting.mountitems.FabricNameComponentMapping.getFabricComponentName;
 
@@ -50,7 +49,6 @@ final class IntBufferBatchMountItem implements BatchMountItem {
   static final int INSTRUCTION_UPDATE_EVENT_EMITTER = 256;
   static final int INSTRUCTION_UPDATE_PADDING = 512;
   static final int INSTRUCTION_UPDATE_OVERFLOW_INSET = 1024;
-  static final int INSTRUCTION_REMOVE_DELETE_TREE = 2048;
 
   private final int mSurfaceId;
   private final int mCommitNumber;
@@ -86,7 +84,7 @@ final class IntBufferBatchMountItem implements BatchMountItem {
       FLog.e(TAG, "Skipping batch of MountItems; was stopped [%d].", mSurfaceId);
       return;
     }
-    if (ENABLE_FABRIC_LOGS) {
+    if (ReactNativeFeatureFlags.enableFabricLogs()) {
       FLog.d(TAG, "Executing IntBufferBatchMountItem on surface [%d]", mSurfaceId);
     }
 
@@ -96,9 +94,13 @@ final class IntBufferBatchMountItem implements BatchMountItem {
       int type = rawType & ~INSTRUCTION_FLAG_MULTIPLE;
       int numInstructions = ((rawType & INSTRUCTION_FLAG_MULTIPLE) != 0 ? mIntBuffer[i++] : 1);
 
+      String[] args = {"numInstructions", String.valueOf(numInstructions)};
+
       Systrace.beginSection(
           Systrace.TRACE_TAG_REACT_JAVA_BRIDGE,
-          "IntBufferBatchMountItem::mountInstructions::" + nameForInstructionString(type));
+          "IntBufferBatchMountItem::mountInstructions::" + nameForInstructionString(type),
+          args,
+          args.length);
       for (int k = 0; k < numInstructions; k++) {
         if (type == INSTRUCTION_CREATE) {
           String componentName = getFabricComponentName((String) mObjBuffer[j++]);
@@ -117,9 +119,6 @@ final class IntBufferBatchMountItem implements BatchMountItem {
           surfaceMountingManager.addViewAt(parentTag, tag, mIntBuffer[i++]);
         } else if (type == INSTRUCTION_REMOVE) {
           surfaceMountingManager.removeViewAt(mIntBuffer[i++], mIntBuffer[i++], mIntBuffer[i++]);
-        } else if (type == INSTRUCTION_REMOVE_DELETE_TREE) {
-          surfaceMountingManager.removeDeleteTreeAt(
-              mIntBuffer[i++], mIntBuffer[i++], mIntBuffer[i++]);
         } else if (type == INSTRUCTION_UPDATE_PROPS) {
           surfaceMountingManager.updateProps(mIntBuffer[i++], (ReadableMap) mObjBuffer[j++]);
         } else if (type == INSTRUCTION_UPDATE_STATE) {
@@ -207,11 +206,6 @@ final class IntBufferBatchMountItem implements BatchMountItem {
             s.append(
                 String.format(
                     "REMOVE [%d]->[%d] @%d\n", mIntBuffer[i++], mIntBuffer[i++], mIntBuffer[i++]));
-          } else if (type == INSTRUCTION_REMOVE_DELETE_TREE) {
-            s.append(
-                String.format(
-                    "REMOVE+DELETE TREE [%d]->[%d] @%d\n",
-                    mIntBuffer[i++], mIntBuffer[i++], mIntBuffer[i++]));
           } else if (type == INSTRUCTION_UPDATE_PROPS) {
             Object props = mObjBuffer[j++];
             String propsString =
@@ -298,8 +292,6 @@ final class IntBufferBatchMountItem implements BatchMountItem {
       return "INSERT";
     } else if (type == INSTRUCTION_REMOVE) {
       return "REMOVE";
-    } else if (type == INSTRUCTION_REMOVE_DELETE_TREE) {
-      return "REMOVE_DELETE_TREE";
     } else if (type == INSTRUCTION_UPDATE_PROPS) {
       return "UPDATE_PROPS";
     } else if (type == INSTRUCTION_UPDATE_STATE) {

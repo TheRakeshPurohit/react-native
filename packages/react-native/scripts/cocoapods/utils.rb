@@ -116,10 +116,10 @@ class ReactNativePodsUtils
             projects.each do |project|
                 project.build_configurations.each do |config|
                     # Using the un-qualified names means you can swap in different implementations, for example ccache
-                    config.build_settings["CC"] = config.build_settings["CC"] ? config.build_settings["CC"].gsub(/#{Regexp.escape(ccache_clang_sh)}/, '') : ""
-                    config.build_settings["LD"] = config.build_settings["LD"] ? config.build_settings["LD"].gsub(/#{Regexp.escape(ccache_clang_sh)}/, "") : ""
-                    config.build_settings["CXX"] = config.build_settings["CXX"] ? config.build_settings["CXX"].gsub(/#{Regexp.escape(ccache_clangpp_sh)}/, "") : ""
-                    config.build_settings["LDPLUSPLUS"] = config.build_settings["LDPLUSPLUS"] ? config.build_settings["LDPLUSPLUS"].gsub(/#{Regexp.escape(ccache_clangpp_sh)}/, "") : ""
+                    config.build_settings["CC"] = config.build_settings["CC"].gsub(/#{Regexp.escape(ccache_clang_sh)}/, '') if config.build_settings["CC"]
+                    config.build_settings["LD"] = config.build_settings["LD"].gsub(/#{Regexp.escape(ccache_clang_sh)}/, "") if config.build_settings["LD"]
+                    config.build_settings["CXX"] = config.build_settings["CXX"].gsub(/#{Regexp.escape(ccache_clangpp_sh)}/, "") if config.build_settings["CXX"]
+                    config.build_settings["LDPLUSPLUS"] = config.build_settings["LDPLUSPLUS"].gsub(/#{Regexp.escape(ccache_clangpp_sh)}/, "") if config.build_settings["LDPLUSPLUS"]
                 end
 
                 project.save()
@@ -233,7 +233,18 @@ class ReactNativePodsUtils
         end
 
         if !file_manager.exist?("#{file_path}.local")
-            node_binary = `command -v node`
+            # When installing pods with a yarn alias, yarn creates a fake yarn and node executables
+            # in a temporary folder.
+            # Using `type -a` we are able to retrieve all the paths of an executable and we can
+            # exclude the temporary ones.
+            # see https://github.com/facebook/react-native/issues/43285 for more info
+            node_binary = `type -a node`.split("\n").map { |path|
+                path.gsub!("node is ", "")
+            }.select { |b|
+                return !b.start_with?("/var")
+            }
+
+            node_binary = node_binary[0]
             system("echo 'export NODE_BINARY=#{node_binary}' > #{file_path}.local")
         end
     end
@@ -619,6 +630,7 @@ class ReactNativePodsUtils
             "React-perflogger",
             "React-rncore",
             "React-runtimeexecutor",
+            "React-timing",
             "ReactCommon",
             "Yoga",
             "boost",
