@@ -17,12 +17,6 @@ declare var console: {[string]: $FlowFixMe};
  * You can use this module directly, or just require InitializeCore.
  */
 if (__DEV__) {
-  require('./setUpReactDevTools');
-
-  // Set up inspector
-  const JSInspector = require('../JSInspector/JSInspector');
-  JSInspector.registerAgent(require('../JSInspector/NetworkAgent'));
-
   // Note we can't check if console is "native" because it would appear "native" in JSC and Hermes.
   // We also can't check any properties that don't exist in the Chrome worker environment.
   // So we check a navigator property that's set to a particular value ("Netscape") in all real browsers.
@@ -42,9 +36,8 @@ if (__DEV__) {
   if (!Platform.isTesting) {
     const HMRClient = require('../Utilities/HMRClient');
 
-    if (global.__FUSEBOX_HAS_FULL_CONSOLE_SUPPORT__) {
-      HMRClient.unstable_notifyFuseboxConsoleEnabled();
-    } else if (console._isPolyfilled) {
+    // TODO(T214991636): Remove legacy Metro log forwarding
+    if (console._isPolyfilled) {
       // We assume full control over the console and send JavaScript logs to Metro.
       [
         'trace',
@@ -77,7 +70,6 @@ if (__DEV__) {
 
   require('./setUpReactRefresh');
 
-  global[
-    `${global.__METRO_GLOBAL_PREFIX__ ?? ''}__loadBundleAsync`
-  ] = require('./Devtools/loadBundleFromServer');
+  global[`${global.__METRO_GLOBAL_PREFIX__ ?? ''}__loadBundleAsync`] =
+    require('./Devtools/loadBundleFromServer').default;
 }

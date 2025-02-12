@@ -18,8 +18,10 @@ import type {
 } from '@react-native/virtualized-lists';
 
 import Platform from '../Utilities/Platform';
-import {VirtualizedSectionList} from '@react-native/virtualized-lists';
+import VirtualizedLists from '@react-native/virtualized-lists';
 import * as React from 'react';
+
+const VirtualizedSectionList = VirtualizedLists.VirtualizedSectionList;
 
 type Item = any;
 
@@ -261,9 +263,7 @@ export default class SectionList<
   }
 
   _wrapperListRef: ?React.ElementRef<typeof VirtualizedSectionList>;
-  /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
-   * LTI update could not be added via codemod */
-  _captureRef = ref => {
+  _captureRef = (ref: ?React.RefOf<VirtualizedSectionList>) => {
     this._wrapperListRef = ref;
   };
 }

@@ -72,7 +72,7 @@ const argv = yargs
  * Start the test for RNTester on iOS.
  *
  * Parameters:
- * - @circleCIArtifacts manager object to manage all the download of CircleCIArtifacts. If null, it will fallback not to use them.
+ * - @ciArtifacts manager object to manage all the download of ciArtifacts. If null, it will fallback not to use them.
  * - @onReleaseBranch whether we are on a release branch or not
  */
 async function testRNTesterIOS(
@@ -151,7 +151,7 @@ async function testRNTesterIOS(
  * Start the test for RNTester on Android.
  *
  * Parameters:
- * - @circleCIArtifacts manager object to manage all the download of CircleCIArtifacts. If null, it will fallback not to use them.
+ * - @ciArtifacts manager object to manage all the download of ciArtifacts. If null, it will fallback not to use them.
  */
 async function testRNTesterAndroid(
   ciArtifacts /*: Unwrap<ReturnType<typeof setupGHAArtifacts>> */,
@@ -164,18 +164,12 @@ async function testRNTesterAndroid(
     } version of RNTester Android with the new Architecture enabled`,
   );
 
-  // Build Codegen as we're on a empty environment and metro needs it.
-  // This can be removed once we have codegen hooked in the `yarn build` step.
-  exec(
-    '../../gradlew :packages:react-native:ReactAndroid:buildCodegenCLI --quiet',
-  );
-
   // Start the Metro server so it will be ready if the app can be built and installed successfully.
   launchPackagerInSeparateWindow(pwd().toString());
 
   // Wait for the Android Emulator to be properly loaded and bootstrapped
   exec(
-    "adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done; input keyevent 82'",
+    "adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;",
   );
 
   if (ciArtifacts != null) {
@@ -223,7 +217,7 @@ async function testRNTesterAndroid(
  * Function that start testing on RNTester.
  *
  * Parameters:
- * - @circleCIArtifacts manager object to manage all the download of CircleCIArtifacts. If null, it will fallback not to use them.
+ * - @ciArtifacts manager object to manage all the download of ciArtifacts. If null, it will fallback not to use them.
  * - @onReleaseBranch whether we are on a release branch or not
  */
 async function testRNTester(
@@ -234,6 +228,12 @@ async function testRNTester(
   // (--ansi) doesn't always work
   // see also https://github.com/shelljs/shelljs/issues/86
   pushd('packages/rn-tester');
+
+  // Build Codegen as we're on a empty environment and metro needs it.
+  // This can be removed once we have codegen hooked in the `yarn build` step.
+  exec(
+    '../../gradlew :packages:react-native:ReactAndroid:buildCodegenCLI --quiet',
+  );
 
   if (argv.platform === 'ios') {
     await testRNTesterIOS(ciArtifacts, onReleaseBranch);

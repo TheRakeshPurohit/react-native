@@ -228,6 +228,21 @@ using namespace facebook::react;
     };
   }
 
+  if ([self.delegate respondsToSelector:@selector(loadSourceForBridge:onProgress:onComplete:)]) {
+    configuration.loadSourceForBridgeWithProgress =
+        ^(RCTBridge *_Nonnull bridge,
+          RCTSourceLoadProgressBlock _Nonnull onProgress,
+          RCTSourceLoadBlock _Nonnull loadCallback) {
+          [weakSelf.delegate loadSourceForBridge:bridge onProgress:onProgress onComplete:loadCallback];
+        };
+  }
+
+  if ([self.delegate respondsToSelector:@selector(loadSourceForBridge:withBlock:)]) {
+    configuration.loadSourceForBridge = ^(RCTBridge *_Nonnull bridge, RCTSourceLoadBlock _Nonnull loadCallback) {
+      [weakSelf.delegate loadSourceForBridge:bridge withBlock:loadCallback];
+    };
+  }
+
   return [[RCTRootViewFactory alloc] initWithTurboModuleDelegate:self hostDelegate:self configuration:configuration];
 }
 
@@ -251,13 +266,20 @@ class RCTAppDelegateBridgelessFeatureFlags : public ReactNativeFeatureFlagsDefau
   {
     return true;
   }
+  bool enableFixForViewCommandRace() override
+  {
+    return true;
+  }
 };
 
 - (void)_setUpFeatureFlags
 {
-  if ([self bridgelessEnabled]) {
-    ReactNativeFeatureFlags::override(std::make_unique<RCTAppDelegateBridgelessFeatureFlags>());
-  }
+  static dispatch_once_t setupFeatureFlagsToken;
+  dispatch_once(&setupFeatureFlagsToken, ^{
+    if ([self bridgelessEnabled]) {
+      ReactNativeFeatureFlags::override(std::make_unique<RCTAppDelegateBridgelessFeatureFlags>());
+    }
+  });
 }
 
 @end
