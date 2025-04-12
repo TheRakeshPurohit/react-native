@@ -10,7 +10,6 @@
 #include "AndroidEventBeat.h"
 #include "ComponentFactory.h"
 #include "EventBeatManager.h"
-#include "EventEmitterWrapper.h"
 #include "FabricMountingManager.h"
 
 #include <cxxreact/TraceSection.h>
@@ -61,8 +60,7 @@ void FabricUIManagerBinding::drainPreallocateViewsQueue() {
 }
 
 void FabricUIManagerBinding::reportMount(SurfaceId surfaceId) {
-  if (ReactNativeFeatureFlags::
-          fixMountingCoordinatorReportedPendingTransactionsOnAndroid()) {
+  {
     // This is a fix for `MountingCoordinator::hasPendingTransactions` on
     // Android, which otherwise would report no pending transactions
     // incorrectly. This is due to the push model used on Android and can be
@@ -172,7 +170,9 @@ void FabricUIManagerBinding::startSurface(
 
   auto surfaceHandler = SurfaceHandler{moduleName->toStdString(), surfaceId};
   surfaceHandler.setContextContainer(scheduler->getContextContainer());
-  surfaceHandler.setProps(initialProps->consume());
+  if (initialProps != nullptr) {
+    surfaceHandler.setProps(initialProps->consume());
+  }
   surfaceHandler.constraintLayout({}, layoutContext);
 
   scheduler->registerSurface(surfaceHandler);
@@ -241,7 +241,9 @@ void FabricUIManagerBinding::startSurfaceWithConstraints(
 
   auto surfaceHandler = SurfaceHandler{moduleName->toStdString(), surfaceId};
   surfaceHandler.setContextContainer(scheduler->getContextContainer());
-  surfaceHandler.setProps(initialProps->consume());
+  if (initialProps != nullptr) {
+    surfaceHandler.setProps(initialProps->consume());
+  }
   surfaceHandler.constraintLayout(constraints, context);
 
   scheduler->registerSurface(surfaceHandler);
@@ -321,8 +323,7 @@ void FabricUIManagerBinding::stopSurfaceWithSurfaceHandler(
   // This is necessary to make sure we remove the surface handler from the
   // registry before invalidating it. Otherwise, we can access an invalid
   // reference in `reportMount`.
-  if (ReactNativeFeatureFlags::
-          fixMountingCoordinatorReportedPendingTransactionsOnAndroid()) {
+  {
     std::unique_lock lock(surfaceHandlerRegistryMutex_);
     surfaceHandlerRegistry_.erase(surfaceHandler.getSurfaceId());
   }
@@ -336,12 +337,6 @@ void FabricUIManagerBinding::stopSurfaceWithSurfaceHandler(
     return;
   }
   scheduler->unregisterSurface(surfaceHandler);
-
-  if (!ReactNativeFeatureFlags::
-          fixMountingCoordinatorReportedPendingTransactionsOnAndroid()) {
-    std::unique_lock lock(surfaceHandlerRegistryMutex_);
-    surfaceHandlerRegistry_.erase(surfaceHandler.getSurfaceId());
-  }
 
   auto mountingManager = getMountingManager("unregisterSurface");
   if (!mountingManager) {
@@ -505,9 +500,7 @@ void FabricUIManagerBinding::schedulerDidFinishTransaction(
     // the trees to determine the mutations to run on the host platform),
     // but we have to due to current limitations in the Android implementation.
     auto mountingTransaction = mountingCoordinator->pullTransaction(
-        // Indicate that the transaction will be performed asynchronously
-        ReactNativeFeatureFlags::
-            fixMountingCoordinatorReportedPendingTransactionsOnAndroid());
+        /* willPerformAsynchronously = */ true);
     if (!mountingTransaction.has_value()) {
       return;
     }
