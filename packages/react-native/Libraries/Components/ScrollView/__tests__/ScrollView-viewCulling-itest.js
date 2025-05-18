@@ -6,7 +6,6 @@
  *
  * @flow strict-local
  * @format
- * @oncall react_native
  * @fantom_flags enableViewCulling:true
  * @fantom_flags enableSynchronousStateUpdates:true
  * @fantom_flags enableFixForParentTagDuringReparenting:true
@@ -20,12 +19,13 @@ import ensureInstance from '../../../../src/private/__tests__/utilities/ensureIn
 import * as Fantom from '@react-native/fantom';
 import nullthrows from 'nullthrows';
 import * as React from 'react';
+import {createRef, useState} from 'react';
 import {FlatList, Modal, ScrollView, View} from 'react-native';
 import ReactNativeElement from 'react-native/src/private/webapis/dom/nodes/ReactNativeElement';
 
 test('basic culling', () => {
   const root = Fantom.createRoot({viewportWidth: 100, viewportHeight: 100});
-  const nodeRef = React.createRef<HostInstance>();
+  const nodeRef = createRef<HostInstance>();
 
   Fantom.runTask(() => {
     root.render(
@@ -79,7 +79,7 @@ test('basic culling', () => {
 
 test('recursive culling', () => {
   const root = Fantom.createRoot({viewportHeight: 100, viewportWidth: 100});
-  const nodeRef = React.createRef<HostInstance>();
+  const nodeRef = createRef<HostInstance>();
 
   Fantom.runTask(() => {
     root.render(
@@ -236,7 +236,7 @@ test('recursive culling', () => {
 
 test('recursive culling when initial offset is negative', () => {
   const root = Fantom.createRoot({viewportHeight: 874, viewportWidth: 402});
-  const nodeRef = React.createRef<HostInstance>();
+  const nodeRef = createRef<HostInstance>();
 
   Fantom.runTask(() => {
     root.render(
@@ -291,7 +291,7 @@ test('recursive culling when initial offset is negative', () => {
 
 test('deep nesting', () => {
   const root = Fantom.createRoot({viewportHeight: 100, viewportWidth: 100});
-  const nodeRef = React.createRef<HostInstance>();
+  const nodeRef = createRef<HostInstance>();
 
   Fantom.runTask(() => {
     root.render(
@@ -458,7 +458,7 @@ test('adding new item into area that is culled', () => {
 });
 
 test('initial render', () => {
-  const nodeRef = React.createRef<HostInstance>();
+  const nodeRef = createRef<HostInstance>();
   const root = Fantom.createRoot({viewportHeight: 100, viewportWidth: 100});
 
   Fantom.runTask(() => {
@@ -542,7 +542,7 @@ test('unmounting culled elements', () => {
 
 // TODO: only elements in ScrollView are culled.
 test('basic culling smaller ScrollView', () => {
-  const nodeRef = React.createRef<HostInstance>();
+  const nodeRef = createRef<HostInstance>();
   const root = Fantom.createRoot({viewportWidth: 100, viewportHeight: 100});
 
   Fantom.runTask(() => {
@@ -600,7 +600,7 @@ test('views are not culled when outside of viewport', () => {
 
 test('culling with transform move', () => {
   const root = Fantom.createRoot({viewportWidth: 100, viewportHeight: 100});
-  const nodeRef = React.createRef<HostInstance>();
+  const nodeRef = createRef<HostInstance>();
 
   Fantom.runTask(() => {
     root.render(
@@ -642,7 +642,7 @@ test('culling with transform move', () => {
 
 test('culling with recursive transform move', () => {
   const root = Fantom.createRoot({viewportWidth: 100, viewportHeight: 100});
-  const nodeRef = React.createRef<HostInstance>();
+  const nodeRef = createRef<HostInstance>();
 
   Fantom.runTask(() => {
     root.render(
@@ -687,7 +687,7 @@ test('culling with recursive transform move', () => {
 
 test('culling with transform scale', () => {
   const root = Fantom.createRoot({viewportWidth: 100, viewportHeight: 100});
-  const nodeRef = React.createRef<HostInstance>();
+  const nodeRef = createRef<HostInstance>();
 
   Fantom.runTask(() => {
     root.render(
@@ -762,7 +762,7 @@ test('culling when ScrollView parent has transform', () => {
 
 test('culling inside of Modal', () => {
   const root = Fantom.createRoot({viewportWidth: 100, viewportHeight: 100});
-  const nodeRef = React.createRef<HostInstance>();
+  const nodeRef = createRef<HostInstance>();
 
   Fantom.runTask(() => {
     root.render(
@@ -823,7 +823,7 @@ test('nesting inside FlatList with item resizing', () => {
   const root = Fantom.createRoot({viewportHeight: 100, viewportWidth: 100});
   let _setIsExpanded = null;
   function ExpandableComponent() {
-    const [isExpanded, setIsExpanded] = React.useState(false);
+    const [isExpanded, setIsExpanded] = useState(false);
     _setIsExpanded = setIsExpanded;
     return <View>{isExpanded && <View style={{height: 80.5}} />}</View>;
   }
@@ -872,7 +872,7 @@ test('nesting inside FlatList with item resizing', () => {
 describe('reparenting', () => {
   test('view flattening with culling', () => {
     const root = Fantom.createRoot({viewportWidth: 100, viewportHeight: 100});
-    const nodeRef = React.createRef<HostInstance>();
+    const nodeRef = createRef<HostInstance>();
 
     Fantom.runTask(() => {
       root.render(
@@ -1246,7 +1246,7 @@ describe('reparenting', () => {
 
   test('parent-child flattening with child culled', () => {
     const root = Fantom.createRoot({viewportWidth: 100, viewportHeight: 100});
-    const nodeRef = React.createRef<HostInstance>();
+    const nodeRef = createRef<HostInstance>();
 
     Fantom.runTask(() => {
       root.render(
@@ -1416,7 +1416,7 @@ describe('reparenting', () => {
       'Insert {type: "ScrollView", parentNativeID: (root), index: 0, nativeID: (N/A)}',
     ]);
 
-    const nodeRef = React.createRef<HostInstance>();
+    const nodeRef = createRef<HostInstance>();
 
     // Now update opacity to unflattned the container and add a child that has a culled descendant.
     Fantom.runTask(() => {
@@ -1497,7 +1497,7 @@ describe('reparenting', () => {
       'Insert {type: "ScrollView", parentNativeID: (root), index: 0, nativeID: (N/A)}',
     ]);
 
-    const nodeRef = React.createRef<HostInstance>();
+    const nodeRef = createRef<HostInstance>();
 
     // Now update opacity to unflattned the container and add a child that has a culled descendant.
     Fantom.runTask(() => {
@@ -1757,7 +1757,7 @@ describe('reparenting', () => {
       'Insert {type: "ScrollView", parentNativeID: (root), index: 0, nativeID: (N/A)}',
     ]);
 
-    const nodeRef = React.createRef<HostInstance>();
+    const nodeRef = createRef<HostInstance>();
 
     // Now change unflattened view container to flattened and change its child to be unflattened.
     Fantom.runTask(() => {
@@ -1847,7 +1847,7 @@ describe('reparenting', () => {
       'Insert {type: "ScrollView", parentNativeID: (root), index: 0, nativeID: (N/A)}',
     ]);
 
-    const nodeRef = React.createRef<HostInstance>();
+    const nodeRef = createRef<HostInstance>();
 
     // Now change unflattened view container to flattened and change its child to be unflattened.
     Fantom.runTask(() => {
@@ -2025,7 +2025,7 @@ describe('reparenting', () => {
 
   test('reparenting with reparented subtree changing its marginTop', () => {
     const root = Fantom.createRoot({viewportWidth: 100, viewportHeight: 100});
-    const nodeRef = React.createRef<HostInstance>();
+    const nodeRef = createRef<HostInstance>();
 
     Fantom.runTask(() => {
       root.render(
@@ -2112,7 +2112,7 @@ describe('reparenting', () => {
 
   test('reparenting deep tree with reparented subtree changing its marginTop', () => {
     const root = Fantom.createRoot({viewportWidth: 100, viewportHeight: 100});
-    const nodeRef = React.createRef<HostInstance>();
+    const nodeRef = createRef<HostInstance>();
 
     Fantom.runTask(() => {
       root.render(

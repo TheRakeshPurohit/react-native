@@ -6,7 +6,6 @@
  *
  * @flow strict-local
  * @format
- * @oncall react_native
  */
 
 import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
@@ -16,6 +15,7 @@ import type {HostInstance} from 'react-native';
 import ensureInstance from '../../../__tests__/utilities/ensureInstance';
 import * as Fantom from '@react-native/fantom';
 import * as React from 'react';
+import {createRef} from 'react';
 import {View} from 'react-native';
 import setUpIntersectionObserver from 'react-native/src/private/setup/setUpIntersectionObserver';
 import setUpMutationObserver from 'react-native/src/private/setup/setUpMutationObserver';
@@ -335,7 +335,7 @@ describe('structuredClone', () => {
 
     describe('non-serializable platform objects', () => {
       it('does NOT clone ReadOnlyNode', () => {
-        const ref = React.createRef<HostInstance>();
+        const ref = createRef<HostInstance>();
         const root = Fantom.createRoot();
         Fantom.runTask(() => {
           root.render(<View ref={ref} />);
@@ -381,7 +381,7 @@ describe('structuredClone', () => {
       });
 
       it('does NOT clone IntersectionObserverEntry', () => {
-        const ref = React.createRef<HostInstance>();
+        const ref = createRef<HostInstance>();
         const root = Fantom.createRoot();
         Fantom.runTask(() => {
           root.render(<View ref={ref} />);
@@ -411,7 +411,7 @@ describe('structuredClone', () => {
       });
 
       it('does NOT clone MutationRecord', () => {
-        const ref = React.createRef<HostInstance>();
+        const ref = createRef<HostInstance>();
         const root = Fantom.createRoot();
         Fantom.runTask(() => {
           root.render(<View ref={ref} />);

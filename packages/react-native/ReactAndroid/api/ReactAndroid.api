@@ -1947,7 +1947,7 @@ public final class com/facebook/react/devsupport/DefaultDevLoadingViewImplementa
 	public final fun setDevLoadingEnabled (Z)V
 }
 
-public final class com/facebook/react/devsupport/DevServerHelper {
+public class com/facebook/react/devsupport/DevServerHelper {
 	public fun <init> (Lcom/facebook/react/modules/debug/interfaces/DeveloperSettings;Landroid/content/Context;Lcom/facebook/react/packagerconnection/PackagerConnectionSettings;)V
 	public final fun closeInspectorConnection ()V
 	public final fun closePackagerConnection ()V
@@ -1956,12 +1956,12 @@ public final class com/facebook/react/devsupport/DevServerHelper {
 	public final fun downloadBundleFromURL (Lcom/facebook/react/devsupport/interfaces/DevBundleDownloadListener;Ljava/io/File;Ljava/lang/String;Lcom/facebook/react/devsupport/BundleDownloader$BundleInfo;Lokhttp3/Request$Builder;)V
 	public static synthetic fun downloadBundleFromURL$default (Lcom/facebook/react/devsupport/DevServerHelper;Lcom/facebook/react/devsupport/interfaces/DevBundleDownloadListener;Ljava/io/File;Ljava/lang/String;Lcom/facebook/react/devsupport/BundleDownloader$BundleInfo;Lokhttp3/Request$Builder;ILjava/lang/Object;)V
 	public final fun downloadBundleResourceFromUrlSync (Ljava/lang/String;Ljava/io/File;)Ljava/io/File;
-	public final fun getDevServerBundleURL (Ljava/lang/String;)Ljava/lang/String;
-	public final fun getDevServerSplitBundleURL (Ljava/lang/String;)Ljava/lang/String;
-	public final fun getSourceMapUrl (Ljava/lang/String;)Ljava/lang/String;
-	public final fun getSourceUrl (Ljava/lang/String;)Ljava/lang/String;
+	public fun getDevServerBundleURL (Ljava/lang/String;)Ljava/lang/String;
+	public fun getDevServerSplitBundleURL (Ljava/lang/String;)Ljava/lang/String;
+	public fun getSourceMapUrl (Ljava/lang/String;)Ljava/lang/String;
+	public fun getSourceUrl (Ljava/lang/String;)Ljava/lang/String;
 	public final fun getWebsocketProxyURL ()Ljava/lang/String;
-	public final fun isPackagerRunning (Lcom/facebook/react/devsupport/interfaces/PackagerStatusCallback;)V
+	public fun isPackagerRunning (Lcom/facebook/react/devsupport/interfaces/PackagerStatusCallback;)V
 	public final fun openDebugger (Lcom/facebook/react/bridge/ReactContext;Ljava/lang/String;)V
 	public final fun openInspectorConnection ()V
 	public final fun openPackagerConnection (Ljava/lang/String;Lcom/facebook/react/devsupport/DevServerHelper$PackagerCommandListener;)V
@@ -4595,7 +4595,7 @@ public abstract class com/facebook/react/uimanager/ViewGroupManager : com/facebo
 	public fun getShadowNodeClass ()Ljava/lang/Class;
 	public static final fun getViewZIndex (Landroid/view/View;)Ljava/lang/Integer;
 	public fun needsCustomLayoutForChildren ()Z
-	public final fun removeView (Landroid/view/ViewGroup;Landroid/view/View;)V
+	public fun removeView (Landroid/view/ViewGroup;Landroid/view/View;)V
 	public synthetic fun removeViewAt (Landroid/view/View;I)V
 	public fun removeViewAt (Landroid/view/ViewGroup;I)V
 	public static final fun setViewZIndex (Landroid/view/View;I)V
@@ -6516,7 +6516,6 @@ public class com/facebook/react/views/textinput/ReactEditText : androidx/appcomp
 	public fun addTextChangedListener (Landroid/text/TextWatcher;)V
 	protected final fun applyTextAttributes ()V
 	public final fun canUpdateWithEventCount (I)Z
-	public fun clearFocus ()V
 	protected final fun finalize ()V
 	public final fun getBorderColor (I)I
 	protected final fun getContainsImages ()Z
@@ -6553,7 +6552,6 @@ public class com/facebook/react/views/textinput/ReactEditText : androidx/appcomp
 	public fun onTextContextMenuItem (I)Z
 	public fun onTouchEvent (Landroid/view/MotionEvent;)Z
 	public fun removeTextChangedListener (Landroid/text/TextWatcher;)V
-	public fun requestFocus (ILandroid/graphics/Rect;)Z
 	public final fun requestFocusFromJS ()V
 	public final fun setAllowFontScaling (Z)V
 	public final fun setAutoFocus (Z)V

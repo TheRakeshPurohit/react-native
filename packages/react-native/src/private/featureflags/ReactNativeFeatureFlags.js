@@ -4,8 +4,9 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<84786200dbf1e0d95605152913b73423>>
+ * @generated SignedSource<<29691b2062c240377834a01ced24c71c>>
  * @flow strict
+ * @noformat
  */
 
 /**
@@ -37,6 +38,7 @@ export type ReactNativeFeatureFlagsJsOnly = $ReadOnly<{
   enableVirtualViewDoubleStateHidden: Getter<boolean>,
   fixVirtualizeListCollapseWindowSize: Getter<boolean>,
   isLayoutAnimationEnabled: Getter<boolean>,
+  reduceDefaultPropsInView: Getter<boolean>,
   scheduleAnimatedCleanupInMicrotask: Getter<boolean>,
   shouldUseAnimatedObjectForTransform: Getter<boolean>,
   shouldUseRemoveClippedSubviewsAsDefaultOnIOS: Getter<boolean>,
@@ -148,6 +150,11 @@ export const fixVirtualizeListCollapseWindowSize: Getter<boolean> = createJavaSc
  * Function used to enable / disabled Layout Animations in React Native.
  */
 export const isLayoutAnimationEnabled: Getter<boolean> = createJavaScriptFlagGetter('isLayoutAnimationEnabled', true);
+
+/**
+ * Optimize how default (accessibility) props are processed in View to avoid unnecessary keys.
+ */
+export const reduceDefaultPropsInView: Getter<boolean> = createJavaScriptFlagGetter('reduceDefaultPropsInView', true);
 
 /**
  * Changes the cleanup of `AnimatedProps` to occur in a microtask instead of synchronously during effect cleanup (for unmount) or subsequent mounts (for updates).

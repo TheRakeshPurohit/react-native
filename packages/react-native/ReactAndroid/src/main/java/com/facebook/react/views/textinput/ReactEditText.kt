@@ -35,6 +35,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.accessibility.AccessibilityNodeInfo
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
@@ -359,28 +360,29 @@ public open class ReactEditText public constructor(context: Context) : AppCompat
       super.onTextContextMenuItem(
           if (id == android.R.id.paste) android.R.id.pasteAsPlainText else id)
 
-  override fun clearFocus() {
-    super.clearFocus()
+  internal fun clearFocusAndMaybeRefocus() {
+    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P || !isInTouchMode) {
+      super.clearFocus()
+    } else {
+      // Avoid refocusing to a new view on old versions of Android by default
+      // by preventing `requestFocus()` on the rootView from moving focus to any child.
+      // https://cs.android.com/android/_/android/platform/frameworks/base/+/bdc66cb5a0ef513f4306edf9156cc978b08e06e4
+      val rootViewGroup = rootView as ViewGroup
+      val oldDescendantFocusability = rootViewGroup.descendantFocusability
+      rootViewGroup.descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
+      super.clearFocus()
+      rootViewGroup.descendantFocusability = oldDescendantFocusability
+    }
     hideSoftKeyboard()
   }
 
-  override fun requestFocus(direction: Int, previouslyFocusedRect: Rect?): Boolean {
-    // On some older versions of Android there is a bug where `clearFocus` will try to focus the
-    // first focusable View in the hierarchy after clearing focus. This is intended behavior, but
-    // only if you are not in touch mode per
-    // https://developer.android.com/reference/android/view/View#clearFocus(), yet this happens in
-    // both. Therefore, we are swallowing Android-based focus calls if we are in touch mode.
-    // If we are not in touch mode (using a hardware keyboard) then we will allow this to happen.
-    // Note this only happens for Android-origin focus calls, as opposed to JS-origin (like tapping)
-    // since those go through `requestFocusProgrammatically`
-    if (isInTouchMode) {
-      return isFocused
-    }
-    return super.requestFocus(direction, previouslyFocusedRect)
+  internal fun clearFocusFromJS() {
+    clearFocusAndMaybeRefocus()
   }
 
   // For cases like autoFocus, or ref.focus() where we request focus programmatically and not
-  // through interacting with the EditText directly (like clicking on it). We cannot use stock
+  // through
+  // interacting with the EditText directly (like clicking on it). We cannot use stock
   // requestFocus() because it will not pop up the soft keyboard, only clicking the input will do
   // that. This method will eventually replace requestFocusInternal()
   private fun requestFocusProgrammatically(): Boolean {
@@ -610,10 +612,6 @@ public open class ReactEditText public constructor(context: Context) : AppCompat
 
   public fun requestFocusFromJS() {
     requestFocusProgrammatically()
-  }
-
-  internal fun clearFocusFromJS() {
-    clearFocus()
   }
 
   public fun incrementAndGetEventCounter(): Int = ++nativeEventCount
