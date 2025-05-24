@@ -612,6 +612,7 @@ public class TextLayoutManager {
       float width,
       YogaMeasureMode widthYogaMeasureMode,
       float height,
+      YogaMeasureMode heightYogaMeasureMode,
       @Nullable ReactTextViewManagerCallback reactTextViewManagerCallback) {
     Spannable text =
         getOrCreateSpannableForText(context, attributedString, reactTextViewManagerCallback);
@@ -626,7 +627,7 @@ public class TextLayoutManager {
       updateTextPaint(paint, baseTextAttributes, context);
     }
 
-    BoringLayout.Metrics boring = BoringLayout.isBoring(text, paint);
+    BoringLayout.Metrics boring = isBoring(text, paint);
 
     int textBreakStrategy =
         TextAttributeProps.getTextBreakStrategy(
@@ -668,7 +669,7 @@ public class TextLayoutManager {
           width,
           YogaMeasureMode.EXACTLY,
           height,
-          YogaMeasureMode.UNDEFINED,
+          heightYogaMeasureMode,
           minimumFontSize,
           maximumNumberOfLines,
           includeFontPadding,
@@ -708,7 +709,7 @@ public class TextLayoutManager {
       Layout.Alignment alignment,
       int justificationMode,
       TextPaint paint) {
-    BoringLayout.Metrics boring = BoringLayout.isBoring(text, paint);
+    BoringLayout.Metrics boring = isBoring(text, paint);
     Layout layout =
         createLayout(
             text,
@@ -761,7 +762,7 @@ public class TextLayoutManager {
         text.removeSpan(span);
       }
       if (boring != null) {
-        boring = BoringLayout.isBoring(text, paint);
+        boring = isBoring(text, paint);
       }
       layout =
           createLayout(
@@ -799,6 +800,7 @@ public class TextLayoutManager {
             width,
             widthYogaMeasureMode,
             height,
+            heightYogaMeasureMode,
             reactTextViewManagerCallback);
 
     int maximumNumberOfLines =
@@ -1080,8 +1082,20 @@ public class TextLayoutManager {
             width,
             YogaMeasureMode.EXACTLY,
             height,
+            YogaMeasureMode.EXACTLY,
             null);
     return FontMetricsUtil.getFontMetrics(
         layout.getText(), layout, Preconditions.checkNotNull(sTextPaintInstance.get()), context);
+  }
+
+  private static @Nullable BoringLayout.Metrics isBoring(Spannable text, TextPaint paint) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+      return BoringLayout.isBoring(text, paint);
+    } else {
+      // Default to include fallback line spacing on Android 13+, like TextView
+      // https://cs.android.com/android/_/android/platform/frameworks/base/+/78c774defb238c05c42b34a12b6b3b0c64844ed7
+      return BoringLayout.isBoring(
+          text, paint, TextDirectionHeuristics.FIRSTSTRONG_LTR, true, null);
+    }
   }
 }
