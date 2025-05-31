@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<a4123bc6f44835c022a1a5238908674c>>
+ * @generated SignedSource<<cf01214e2de7a6eb948c311b10d272ae>>
  */
 
 /**
@@ -70,6 +70,11 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool disableMountItemReorderingAndroid();
 
   /**
+   * Turns off the global measurement cache used by TextLayoutManager on Android.
+   */
+  RN_EXPORT static bool disableTextLayoutManagerCacheAndroid();
+
+  /**
    * When enabled, the accessibilityOrder prop will propagate to native platforms and define the accessibility order.
    */
   RN_EXPORT static bool enableAccessibilityOrder();
@@ -130,9 +135,19 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool enableFontScaleChangesUpdatingLayout();
 
   /**
+   * Applies base offset for each line of text separately on iOS.
+   */
+  RN_EXPORT static bool enableIOSTextBaselineOffsetPerLine();
+
+  /**
    * iOS Views will clip to their padding box vs border box
    */
   RN_EXPORT static bool enableIOSViewClipToPaddingBox();
+
+  /**
+   * Integrates IntersectionObserver in the Event Loop in the new architecture, to dispatch the initial notifications for observations in the "Update the rendering" step.
+   */
+  RN_EXPORT static bool enableIntersectionObserverEventLoopIntegration();
 
   /**
    * When enabled, LayoutAnimations API will animate state changes on Android.
@@ -145,9 +160,19 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool enableLayoutAnimationsOnIOS();
 
   /**
+   * Make RCTUnsafeExecuteOnMainQueueSync less likely to deadlock, when used in conjuction with sync rendering/events.
+   */
+  RN_EXPORT static bool enableMainQueueCoordinatorOnIOS();
+
+  /**
    * Makes modules requiring main queue setup initialize on the main thread, during React Native init.
    */
   RN_EXPORT static bool enableMainQueueModulesOnIOS();
+
+  /**
+   * Enable NSNull conversion when handling module arguments on iOS
+   */
+  RN_EXPORT static bool enableModuleArgumentNSNullConversionIOS();
 
   /**
    * Parse CSS strings using the Fabric CSS parser instead of ViewConfig processing

@@ -6,7 +6,6 @@
  *
  * @flow
  * @format
- * @oncall react_native
  */
 
 import type {BabelCoreOptions} from '@babel/core';
@@ -43,6 +42,10 @@ const buildConfig: BuildConfig = {
       target: 'node',
     },
     'core-cli-utils': {
+      emitTypeScriptDefs: true,
+      target: 'node',
+    },
+    'debugger-shell': {
       emitTypeScriptDefs: true,
       target: 'node',
     },

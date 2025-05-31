@@ -152,7 +152,11 @@ SharedDebugStringConvertibleList ParagraphProps::getDebugProps() const {
 }
 #endif
 
-#ifdef ANDROID
+#ifdef RN_SERIALIZABLE_STATE
+
+ComponentName ParagraphProps::getDiffPropsImplementationTarget() const {
+  return "Paragraph";
+}
 
 folly::dynamic ParagraphProps::getDiffProps(const Props* prevProps) const {
   static const auto defaultProps = ParagraphProps();

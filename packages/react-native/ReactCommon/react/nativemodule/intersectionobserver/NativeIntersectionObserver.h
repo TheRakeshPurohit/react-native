@@ -8,6 +8,7 @@
 #pragma once
 
 #include <FBReactNativeSpec/FBReactNativeSpecJSI.h>
+#include <react/renderer/bridging/bridging.h>
 #include <react/renderer/observers/intersection/IntersectionObserverManager.h>
 #include <optional>
 #include <tuple>
@@ -23,7 +24,7 @@ using NativeIntersectionObserverObserveOptions =
         // intersectionObserverId
         NativeIntersectionObserverIntersectionObserverId,
         // targetShadowNode
-        jsi::Object,
+        ShadowNode::Shared,
         // thresholds
         std::vector<Float>,
         // rootThresholds
@@ -49,7 +50,7 @@ using NativeIntersectionObserverEntry =
         // isIntersectingAboveThresholds
         bool,
         // time
-        double>;
+        HighResTimeStamp>;
 
 template <>
 struct Bridging<NativeIntersectionObserverEntry>
@@ -72,7 +73,7 @@ class NativeIntersectionObserver
   void unobserve(
       jsi::Runtime& runtime,
       IntersectionObserverObserverId intersectionObserverId,
-      jsi::Object targetShadowNode);
+      ShadowNode::Shared targetShadowNode);
 
   jsi::Object observeV2(
       jsi::Runtime& runtime,
@@ -97,7 +98,7 @@ class NativeIntersectionObserver
 
   static UIManager& getUIManagerFromRuntime(jsi::Runtime& runtime);
   static NativeIntersectionObserverEntry convertToNativeModuleEntry(
-      IntersectionObserverEntry entry,
+      const IntersectionObserverEntry& entry,
       jsi::Runtime& runtime);
 };
 

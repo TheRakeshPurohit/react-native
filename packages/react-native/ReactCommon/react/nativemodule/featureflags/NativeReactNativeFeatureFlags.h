@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<f7fbc7ab177cd84524a544cf3f94ae19>>
+ * @generated SignedSource<<750cb2f00345cd1fd7ad82ed615e82bf>>
  */
 
 /**
@@ -30,10 +30,11 @@
 namespace facebook::react {
 
 class NativeReactNativeFeatureFlags
-    : public NativeReactNativeFeatureFlagsCxxSpec<
-          NativeReactNativeFeatureFlags> {
+    : public NativeReactNativeFeatureFlagsCxxSpecJSI {
  public:
   NativeReactNativeFeatureFlags(std::shared_ptr<CallInvoker> jsInvoker);
+
+  static constexpr std::string_view kModuleName = "NativeReactNativeFeatureFlagsCxx";
 
   bool commonTestFlag(jsi::Runtime& runtime);
 
@@ -48,6 +49,8 @@ class NativeReactNativeFeatureFlags
   bool disableMainQueueSyncDispatchIOS(jsi::Runtime& runtime);
 
   bool disableMountItemReorderingAndroid(jsi::Runtime& runtime);
+
+  bool disableTextLayoutManagerCacheAndroid(jsi::Runtime& runtime);
 
   bool enableAccessibilityOrder(jsi::Runtime& runtime);
 
@@ -73,13 +76,21 @@ class NativeReactNativeFeatureFlags
 
   bool enableFontScaleChangesUpdatingLayout(jsi::Runtime& runtime);
 
+  bool enableIOSTextBaselineOffsetPerLine(jsi::Runtime& runtime);
+
   bool enableIOSViewClipToPaddingBox(jsi::Runtime& runtime);
+
+  bool enableIntersectionObserverEventLoopIntegration(jsi::Runtime& runtime);
 
   bool enableLayoutAnimationsOnAndroid(jsi::Runtime& runtime);
 
   bool enableLayoutAnimationsOnIOS(jsi::Runtime& runtime);
 
+  bool enableMainQueueCoordinatorOnIOS(jsi::Runtime& runtime);
+
   bool enableMainQueueModulesOnIOS(jsi::Runtime& runtime);
+
+  bool enableModuleArgumentNSNullConversionIOS(jsi::Runtime& runtime);
 
   bool enableNativeCSSParsing(jsi::Runtime& runtime);
 
