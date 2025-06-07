@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<14cd1a58bd153dedda045a72c1494caa>>
+ * @generated SignedSource<<aba6b250d4c48029ae96480724c16ed0>>
  */
 
 /**
@@ -30,6 +30,7 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
   private var cxxNativeAnimatedEnabledCache: Boolean? = null
   private var disableMainQueueSyncDispatchIOSCache: Boolean? = null
   private var disableMountItemReorderingAndroidCache: Boolean? = null
+  private var disableTextLayoutManagerCacheAndroidCache: Boolean? = null
   private var enableAccessibilityOrderCache: Boolean? = null
   private var enableAccumulatedUpdatesInRawPropsAndroidCache: Boolean? = null
   private var enableBridgelessArchitectureCache: Boolean? = null
@@ -42,10 +43,14 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
   private var enableFabricRendererCache: Boolean? = null
   private var enableFixForParentTagDuringReparentingCache: Boolean? = null
   private var enableFontScaleChangesUpdatingLayoutCache: Boolean? = null
+  private var enableIOSTextBaselineOffsetPerLineCache: Boolean? = null
   private var enableIOSViewClipToPaddingBoxCache: Boolean? = null
+  private var enableIntersectionObserverEventLoopIntegrationCache: Boolean? = null
   private var enableLayoutAnimationsOnAndroidCache: Boolean? = null
   private var enableLayoutAnimationsOnIOSCache: Boolean? = null
+  private var enableMainQueueCoordinatorOnIOSCache: Boolean? = null
   private var enableMainQueueModulesOnIOSCache: Boolean? = null
+  private var enableModuleArgumentNSNullConversionIOSCache: Boolean? = null
   private var enableNativeCSSParsingCache: Boolean? = null
   private var enableNetworkEventReportingCache: Boolean? = null
   private var enableNewBackgroundAndBorderDrawablesCache: Boolean? = null
@@ -72,6 +77,7 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
   private var useShadowNodeStateOnCloneCache: Boolean? = null
   private var useTurboModuleInteropCache: Boolean? = null
   private var useTurboModulesCache: Boolean? = null
+  private var virtualViewPrerenderRatioCache: Double? = null
 
   override fun commonTestFlag(): Boolean {
     var cached = commonTestFlagCache
@@ -129,6 +135,16 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
       cached = currentProvider.disableMountItemReorderingAndroid()
       accessedFeatureFlags.add("disableMountItemReorderingAndroid")
       disableMountItemReorderingAndroidCache = cached
+    }
+    return cached
+  }
+
+  override fun disableTextLayoutManagerCacheAndroid(): Boolean {
+    var cached = disableTextLayoutManagerCacheAndroidCache
+    if (cached == null) {
+      cached = currentProvider.disableTextLayoutManagerCacheAndroid()
+      accessedFeatureFlags.add("disableTextLayoutManagerCacheAndroid")
+      disableTextLayoutManagerCacheAndroidCache = cached
     }
     return cached
   }
@@ -253,12 +269,32 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
     return cached
   }
 
+  override fun enableIOSTextBaselineOffsetPerLine(): Boolean {
+    var cached = enableIOSTextBaselineOffsetPerLineCache
+    if (cached == null) {
+      cached = currentProvider.enableIOSTextBaselineOffsetPerLine()
+      accessedFeatureFlags.add("enableIOSTextBaselineOffsetPerLine")
+      enableIOSTextBaselineOffsetPerLineCache = cached
+    }
+    return cached
+  }
+
   override fun enableIOSViewClipToPaddingBox(): Boolean {
     var cached = enableIOSViewClipToPaddingBoxCache
     if (cached == null) {
       cached = currentProvider.enableIOSViewClipToPaddingBox()
       accessedFeatureFlags.add("enableIOSViewClipToPaddingBox")
       enableIOSViewClipToPaddingBoxCache = cached
+    }
+    return cached
+  }
+
+  override fun enableIntersectionObserverEventLoopIntegration(): Boolean {
+    var cached = enableIntersectionObserverEventLoopIntegrationCache
+    if (cached == null) {
+      cached = currentProvider.enableIntersectionObserverEventLoopIntegration()
+      accessedFeatureFlags.add("enableIntersectionObserverEventLoopIntegration")
+      enableIntersectionObserverEventLoopIntegrationCache = cached
     }
     return cached
   }
@@ -283,12 +319,32 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
     return cached
   }
 
+  override fun enableMainQueueCoordinatorOnIOS(): Boolean {
+    var cached = enableMainQueueCoordinatorOnIOSCache
+    if (cached == null) {
+      cached = currentProvider.enableMainQueueCoordinatorOnIOS()
+      accessedFeatureFlags.add("enableMainQueueCoordinatorOnIOS")
+      enableMainQueueCoordinatorOnIOSCache = cached
+    }
+    return cached
+  }
+
   override fun enableMainQueueModulesOnIOS(): Boolean {
     var cached = enableMainQueueModulesOnIOSCache
     if (cached == null) {
       cached = currentProvider.enableMainQueueModulesOnIOS()
       accessedFeatureFlags.add("enableMainQueueModulesOnIOS")
       enableMainQueueModulesOnIOSCache = cached
+    }
+    return cached
+  }
+
+  override fun enableModuleArgumentNSNullConversionIOS(): Boolean {
+    var cached = enableModuleArgumentNSNullConversionIOSCache
+    if (cached == null) {
+      cached = currentProvider.enableModuleArgumentNSNullConversionIOS()
+      accessedFeatureFlags.add("enableModuleArgumentNSNullConversionIOS")
+      enableModuleArgumentNSNullConversionIOSCache = cached
     }
     return cached
   }
@@ -549,6 +605,16 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
       cached = currentProvider.useTurboModules()
       accessedFeatureFlags.add("useTurboModules")
       useTurboModulesCache = cached
+    }
+    return cached
+  }
+
+  override fun virtualViewPrerenderRatio(): Double {
+    var cached = virtualViewPrerenderRatioCache
+    if (cached == null) {
+      cached = currentProvider.virtualViewPrerenderRatio()
+      accessedFeatureFlags.add("virtualViewPrerenderRatio")
+      virtualViewPrerenderRatioCache = cached
     }
     return cached
   }

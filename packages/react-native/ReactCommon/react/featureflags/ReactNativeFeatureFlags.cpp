@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<88fdbea2f97f628187164a47a9737da0>>
+ * @generated SignedSource<<b724dc9b1812a124f4964640b7fca8a1>>
  */
 
 /**
@@ -48,6 +48,10 @@ bool ReactNativeFeatureFlags::disableMainQueueSyncDispatchIOS() {
 
 bool ReactNativeFeatureFlags::disableMountItemReorderingAndroid() {
   return getAccessor().disableMountItemReorderingAndroid();
+}
+
+bool ReactNativeFeatureFlags::disableTextLayoutManagerCacheAndroid() {
+  return getAccessor().disableTextLayoutManagerCacheAndroid();
 }
 
 bool ReactNativeFeatureFlags::enableAccessibilityOrder() {
@@ -98,8 +102,16 @@ bool ReactNativeFeatureFlags::enableFontScaleChangesUpdatingLayout() {
   return getAccessor().enableFontScaleChangesUpdatingLayout();
 }
 
+bool ReactNativeFeatureFlags::enableIOSTextBaselineOffsetPerLine() {
+  return getAccessor().enableIOSTextBaselineOffsetPerLine();
+}
+
 bool ReactNativeFeatureFlags::enableIOSViewClipToPaddingBox() {
   return getAccessor().enableIOSViewClipToPaddingBox();
+}
+
+bool ReactNativeFeatureFlags::enableIntersectionObserverEventLoopIntegration() {
+  return getAccessor().enableIntersectionObserverEventLoopIntegration();
 }
 
 bool ReactNativeFeatureFlags::enableLayoutAnimationsOnAndroid() {
@@ -110,8 +122,16 @@ bool ReactNativeFeatureFlags::enableLayoutAnimationsOnIOS() {
   return getAccessor().enableLayoutAnimationsOnIOS();
 }
 
+bool ReactNativeFeatureFlags::enableMainQueueCoordinatorOnIOS() {
+  return getAccessor().enableMainQueueCoordinatorOnIOS();
+}
+
 bool ReactNativeFeatureFlags::enableMainQueueModulesOnIOS() {
   return getAccessor().enableMainQueueModulesOnIOS();
+}
+
+bool ReactNativeFeatureFlags::enableModuleArgumentNSNullConversionIOS() {
+  return getAccessor().enableModuleArgumentNSNullConversionIOS();
 }
 
 bool ReactNativeFeatureFlags::enableNativeCSSParsing() {
@@ -216,6 +236,10 @@ bool ReactNativeFeatureFlags::useTurboModuleInterop() {
 
 bool ReactNativeFeatureFlags::useTurboModules() {
   return getAccessor().useTurboModules();
+}
+
+double ReactNativeFeatureFlags::virtualViewPrerenderRatio() {
+  return getAccessor().virtualViewPrerenderRatio();
 }
 
 void ReactNativeFeatureFlags::override(

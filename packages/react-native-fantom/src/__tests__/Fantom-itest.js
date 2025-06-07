@@ -6,7 +6,6 @@
  *
  * @flow strict-local
  * @format
- * @oncall react_native
  */
 
 import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
@@ -16,6 +15,7 @@ import type {HostInstance} from 'react-native';
 
 import * as Fantom from '@react-native/fantom';
 import * as React from 'react';
+import {createRef} from 'react';
 import {LogBox, Modal, ScrollView, Text, TextInput, View} from 'react-native';
 import ensureInstance from 'react-native/src/private/__tests__/utilities/ensureInstance';
 import NativeFantom from 'react-native/src/private/testing/fantom/specs/NativeFantom';
@@ -25,6 +25,8 @@ import ReactNativeElement from 'react-native/src/private/webapis/dom/nodes/React
 function getActualViewportDimensions(root: Root): {
   viewportWidth: number,
   viewportHeight: number,
+  viewportOffsetX: number,
+  viewportOffsetY: number,
 } {
   Fantom.runTask(() => {
     root.render(<View />);
@@ -34,6 +36,8 @@ function getActualViewportDimensions(root: Root): {
   return {
     viewportWidth: rect.width,
     viewportHeight: rect.height,
+    viewportOffsetX: rect.x,
+    viewportOffsetY: rect.y,
   };
 }
 
@@ -245,29 +249,51 @@ describe('Fantom', () => {
         Fantom.runWorkLoop();
       });
 
-      it('should throw an error when running a task with LogBox installed', () => {
-        LogBox.install();
+      describe('when LogBox is installed', () => {
+        let originalConsoleError;
 
-        expect(() => {
-          Fantom.runTask(() => {});
-        }).toThrow(
-          'Cannot run work loop while LogBox is installed, as LogBox intercepts errors thrown in tests.' +
-            ' If you are installing LogBox unintentionally using `InitializeCore`, replace it with `@react-native/fantom/src/setUpDefaultReactNativeEnvironment` to avoid this problem.',
-        );
+        beforeEach(() => {
+          LogBox.install();
 
-        // We need to do this cleanup or Fantom will fail the test for us.
-        LogBox.uninstall();
-        Fantom.runWorkLoop();
-      });
+          originalConsoleError = console.error;
 
-      it('should not throw an error when running a task with LogBox installed if setLogBoxCheckEnabled is set to false', () => {
-        LogBox.install();
+          // $FlowExpectedError[cannot-write]
+          console.error = jest.fn();
+        });
 
-        Fantom.setLogBoxCheckEnabled(false);
+        afterEach(() => {
+          LogBox.uninstall();
 
-        expect(() => {
-          Fantom.runTask(() => {});
-        }).not.toThrow();
+          // $FlowExpectedError[cannot-write]
+          console.error = originalConsoleError;
+        });
+
+        it('should throw an error when running a task', () => {
+          const expectedErrorMessage =
+            'Cannot run work loop while LogBox is installed, as LogBox intercepts errors thrown in tests.' +
+            ' If you are installing LogBox unintentionally using `InitializeCore`, replace it with `@react-native/fantom/src/setUpDefaultReactNativeEnvironment` to avoid this problem.';
+
+          expect(() => {
+            Fantom.runTask(() => {});
+          }).toThrow(expectedErrorMessage);
+
+          expect(console.error).toHaveBeenCalledTimes(1);
+          expect(console.error).toHaveBeenCalledWith(expectedErrorMessage);
+
+          // We need to do this cleanup or Fantom will fail the test for us.
+          LogBox.uninstall();
+          Fantom.runWorkLoop();
+        });
+
+        it('should not throw an error if setLogBoxCheckEnabled is set to false', () => {
+          Fantom.setLogBoxCheckEnabled(false);
+
+          expect(() => {
+            Fantom.runTask(() => {});
+          }).not.toThrow();
+
+          expect(console.error).not.toHaveBeenCalled();
+        });
       });
     });
   });
@@ -279,17 +305,23 @@ describe('Fantom', () => {
       expect(getActualViewportDimensions(rootWithDefaults)).toEqual({
         viewportWidth: 390,
         viewportHeight: 844,
+        viewportOffsetX: 0,
+        viewportOffsetY: 0,
       });
 
       const rootWithCustomWidthAndHeight = Fantom.createRoot({
         viewportWidth: 200,
         viewportHeight: 600,
+        viewportOffsetX: 20,
+        viewportOffsetY: 102,
       });
 
       expect(getActualViewportDimensions(rootWithCustomWidthAndHeight)).toEqual(
         {
           viewportWidth: 200,
           viewportHeight: 600,
+          viewportOffsetX: 20,
+          viewportOffsetY: 102,
         },
       );
     });
@@ -516,7 +548,7 @@ describe('Fantom', () => {
             },
           ],
           props: {
-            foregroundColor: 'rgba(255, 255, 255, 127)',
+            foregroundColor: 'rgba(0, 0, 0, 0)',
           },
           type: 'Paragraph',
         });
@@ -530,7 +562,7 @@ describe('Fantom', () => {
 
       let focusEvent = jest.fn();
 
-      const ref = React.createRef<HostInstance>();
+      const ref = createRef<HostInstance>();
 
       Fantom.runTask(() => {
         root.render(<TextInput onFocus={focusEvent} ref={ref} />);
@@ -554,7 +586,7 @@ describe('Fantom', () => {
 
     it('sends event with payload', () => {
       const root = Fantom.createRoot();
-      const ref = React.createRef<HostInstance>();
+      const ref = createRef<HostInstance>();
       const onChange = jest.fn();
 
       Fantom.runTask(() => {
@@ -585,7 +617,7 @@ describe('Fantom', () => {
 
     it('it batches events with isUnique option', () => {
       const root = Fantom.createRoot();
-      const ref = React.createRef<HostInstance>();
+      const ref = createRef<HostInstance>();
       const onScroll = jest.fn();
 
       Fantom.runTask(() => {
@@ -644,7 +676,7 @@ describe('Fantom', () => {
   describe('dispatchNativeEvent', () => {
     it('flushes the event and runs the work loop', () => {
       const root = Fantom.createRoot();
-      const ref = React.createRef<HostInstance>();
+      const ref = createRef<HostInstance>();
 
       let focusEvent = jest.fn();
 
@@ -665,7 +697,7 @@ describe('Fantom', () => {
   describe('enqueueScrollEvent', () => {
     it('throws error if called on node that is not scroll view', () => {
       const root = Fantom.createRoot();
-      const ref = React.createRef<HostInstance>();
+      const ref = createRef<HostInstance>();
 
       Fantom.runTask(() => {
         root.render(<View ref={ref} />);
@@ -687,8 +719,8 @@ describe('Fantom', () => {
 
     it('delivers onScroll event and affects position of elements on screen', () => {
       const root = Fantom.createRoot();
-      const viewRef = React.createRef<HostInstance>();
-      const scrollViewRef = React.createRef<HostInstance>();
+      const viewRef = createRef<HostInstance>();
+      const scrollViewRef = createRef<HostInstance>();
       const onScroll = jest.fn();
 
       Fantom.runTask(() => {
@@ -756,7 +788,7 @@ describe('Fantom', () => {
   describe('scrollTo', () => {
     it('throws error if called on node that is not scroll view', () => {
       const root = Fantom.createRoot();
-      const ref = React.createRef<HostInstance>();
+      const ref = createRef<HostInstance>();
 
       Fantom.runTask(() => {
         root.render(<View ref={ref} />);
@@ -776,8 +808,8 @@ describe('Fantom', () => {
 
     it('delivers onScroll event and affects position of elements on screen', () => {
       const root = Fantom.createRoot();
-      const scrollViewRef = React.createRef<HostInstance>();
-      const viewRef = React.createRef<HostInstance>();
+      const scrollViewRef = createRef<HostInstance>();
+      const viewRef = createRef<HostInstance>();
       const onScroll = jest.fn();
 
       Fantom.runTask(() => {
@@ -868,7 +900,7 @@ describe('Fantom', () => {
   describe('enqueueModalSizeUpdate', () => {
     it('throws error if called on node that is not <Modal />', () => {
       const root = Fantom.createRoot();
-      const ref = React.createRef<HostInstance>();
+      const ref = createRef<HostInstance>();
 
       Fantom.runTask(() => {
         root.render(<View ref={ref} />);
@@ -890,26 +922,21 @@ describe('Fantom', () => {
 
     it('change size of <Modal />', () => {
       const root = Fantom.createRoot();
-      let maybeModalNode;
-      let maybeViewNode;
+      const modalNodeRef = createRef<HostInstance>();
+      const viewNodeRef = createRef<HostInstance>();
 
       Fantom.runTask(() => {
         root.render(
-          <Modal
-            ref={(node: ?HostInstance) => {
-              maybeModalNode = node;
-            }}>
-            <View
-              style={{width: '50%', height: '25%'}}
-              ref={node => {
-                maybeViewNode = node;
-              }}
-            />
+          <Modal ref={modalNodeRef}>
+            <View style={{width: '50%', height: '25%'}} ref={viewNodeRef} />
           </Modal>,
         );
       });
 
-      const modalElement = ensureInstance(maybeModalNode, ReactNativeElement);
+      const modalElement = ensureInstance(
+        modalNodeRef.current,
+        ReactNativeElement,
+      );
 
       Fantom.runOnUIThread(() => {
         Fantom.enqueueModalSizeUpdate(modalElement, {
@@ -920,7 +947,10 @@ describe('Fantom', () => {
 
       Fantom.runWorkLoop();
 
-      const viewElement = ensureInstance(maybeViewNode, ReactNativeElement);
+      const viewElement = ensureInstance(
+        viewNodeRef.current,
+        ReactNativeElement,
+      );
 
       const boundingClientRect = viewElement.getBoundingClientRect();
       expect(boundingClientRect.height).toBe(25);

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<7f357475254104729cc7910c14e1c1fb>>
+ * @generated SignedSource<<e3792f1be08a9175b71c3bef175fbb71>>
  */
 
 /**
@@ -35,6 +35,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun disableMountItemReorderingAndroid(): Boolean = false
 
+  override fun disableTextLayoutManagerCacheAndroid(): Boolean = false
+
   override fun enableAccessibilityOrder(): Boolean = false
 
   override fun enableAccumulatedUpdatesInRawPropsAndroid(): Boolean = false
@@ -59,13 +61,21 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun enableFontScaleChangesUpdatingLayout(): Boolean = false
 
+  override fun enableIOSTextBaselineOffsetPerLine(): Boolean = false
+
   override fun enableIOSViewClipToPaddingBox(): Boolean = false
+
+  override fun enableIntersectionObserverEventLoopIntegration(): Boolean = true
 
   override fun enableLayoutAnimationsOnAndroid(): Boolean = false
 
   override fun enableLayoutAnimationsOnIOS(): Boolean = true
 
+  override fun enableMainQueueCoordinatorOnIOS(): Boolean = false
+
   override fun enableMainQueueModulesOnIOS(): Boolean = false
+
+  override fun enableModuleArgumentNSNullConversionIOS(): Boolean = false
 
   override fun enableNativeCSSParsing(): Boolean = false
 
@@ -118,4 +128,6 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun useTurboModuleInterop(): Boolean = false
 
   override fun useTurboModules(): Boolean = false
+
+  override fun virtualViewPrerenderRatio(): Double = 5.0
 }

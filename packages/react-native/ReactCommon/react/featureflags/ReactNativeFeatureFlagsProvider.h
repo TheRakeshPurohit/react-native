@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<25e38ea9e85a704f2f5ab6c7b8cb3062>>
+ * @generated SignedSource<<2ae65ebd8470b768fa42f240842d0f87>>
  */
 
 /**
@@ -31,6 +31,7 @@ class ReactNativeFeatureFlagsProvider {
   virtual bool cxxNativeAnimatedEnabled() = 0;
   virtual bool disableMainQueueSyncDispatchIOS() = 0;
   virtual bool disableMountItemReorderingAndroid() = 0;
+  virtual bool disableTextLayoutManagerCacheAndroid() = 0;
   virtual bool enableAccessibilityOrder() = 0;
   virtual bool enableAccumulatedUpdatesInRawPropsAndroid() = 0;
   virtual bool enableBridgelessArchitecture() = 0;
@@ -43,10 +44,14 @@ class ReactNativeFeatureFlagsProvider {
   virtual bool enableFabricRenderer() = 0;
   virtual bool enableFixForParentTagDuringReparenting() = 0;
   virtual bool enableFontScaleChangesUpdatingLayout() = 0;
+  virtual bool enableIOSTextBaselineOffsetPerLine() = 0;
   virtual bool enableIOSViewClipToPaddingBox() = 0;
+  virtual bool enableIntersectionObserverEventLoopIntegration() = 0;
   virtual bool enableLayoutAnimationsOnAndroid() = 0;
   virtual bool enableLayoutAnimationsOnIOS() = 0;
+  virtual bool enableMainQueueCoordinatorOnIOS() = 0;
   virtual bool enableMainQueueModulesOnIOS() = 0;
+  virtual bool enableModuleArgumentNSNullConversionIOS() = 0;
   virtual bool enableNativeCSSParsing() = 0;
   virtual bool enableNetworkEventReporting() = 0;
   virtual bool enableNewBackgroundAndBorderDrawables() = 0;
@@ -73,6 +78,7 @@ class ReactNativeFeatureFlagsProvider {
   virtual bool useShadowNodeStateOnClone() = 0;
   virtual bool useTurboModuleInterop() = 0;
   virtual bool useTurboModules() = 0;
+  virtual double virtualViewPrerenderRatio() = 0;
 };
 
 } // namespace facebook::react

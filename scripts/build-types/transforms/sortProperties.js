@@ -6,7 +6,6 @@
  *
  * @flow strict-local
  * @format
- * @oncall react_native
  */
 
 import type {PluginObj} from '@babel/core';
@@ -14,6 +13,7 @@ import type {PluginObj} from '@babel/core';
 import * as t from '@babel/types';
 
 function sortMembers<T>(members: T[]): T[] {
+  const indexSignature = [];
   const properties = [];
   const functionProperties = [];
   const methods = [];
@@ -35,6 +35,8 @@ function sortMembers<T>(members: T[]): T[] {
       } else {
         properties.push(member);
       }
+    } else if (t.isTSIndexSignature(member)) {
+      indexSignature.push(member);
     } else {
       methods.push(member);
     }
@@ -65,7 +67,8 @@ function sortMembers<T>(members: T[]): T[] {
   methods.sort(comparator);
   enumMembers.sort(comparator);
 
-  return properties
+  return indexSignature
+    .concat(properties)
     .concat(functionProperties)
     .concat(methods)
     .concat(enumMembers);

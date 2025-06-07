@@ -6,7 +6,6 @@
  *
  * @flow strict-local
  * @format
- * @oncall react_native
  */
 
 import type {DebuggerSessionIDs, EventReporter} from '../types/EventReporter';
@@ -48,10 +47,10 @@ const MIN_EVENT_LOOP_DELAY_PERCENT_TO_REPORT = 20;
 const INTERNAL_ERROR_CODE = 1011;
 
 // should be aligned with
-// https://github.com/facebook/react-native-devtools-frontend/blob/fa273092fbc8edc94d4a0a3621735f4677a99ba8/front_end/ui/legacy/components/utils/TargetDetachedDialog.ts#L50
+// https://github.com/facebook/react-native-devtools-frontend/blob/3d17e0fd462dc698db34586697cce2371b25e0d3/front_end/ui/legacy/components/utils/TargetDetachedDialog.ts#L50-L64
 const INTERNAL_ERROR_MESSAGES = {
-  UREGISTERED_DEVICE:
-    '[UREGISTERED_DEVICE] Debugger connection attempted for a device that was not registered',
+  UNREGISTERED_DEVICE:
+    '[UNREGISTERED_DEVICE] Debugger connection attempted for a device that was not registered',
   INCORRECT_URL:
     '[INCORRECT_URL] Incorrect URL - device and page IDs must be provided',
 };
@@ -172,7 +171,8 @@ export default class InspectorProxy implements InspectorProxyQueries {
       ) {
         this.#logger?.warn(
           `Waiting for a DevTools connection to app='%s' on device='%s'.
-    Try again when it's established. If no connection occurs, try to:
+    Try again when the main bundle for the app is built and connection is established.
+    If no connection occurs, try to:
     - Restart the app. For Android, force stopping the app first might be required.
     - Ensure a stable connection to the device.
     - Ensure that the app is built in a mode that supports debugging.
@@ -520,7 +520,7 @@ export default class InspectorProxy implements InspectorProxyQueries {
         }
 
         if (device == null) {
-          throw new Error(INTERNAL_ERROR_MESSAGES.UREGISTERED_DEVICE);
+          throw new Error(INTERNAL_ERROR_MESSAGES.UNREGISTERED_DEVICE);
         }
 
         this.#logger?.info(
