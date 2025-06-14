@@ -12,6 +12,7 @@
 #include <react/renderer/core/graphicsConversions.h>
 #include <react/renderer/core/propsConversions.h>
 #include <react/renderer/debug/DebugStringConvertibleItem.h>
+#include <react/utils/FloatComparison.h>
 
 namespace facebook::react {
 
@@ -97,12 +98,6 @@ static TextAttributes convertRawProp(
       "textTransform",
       sourceTextAttributes.textTransform,
       defaultTextAttributes.textTransform);
-  textAttributes.textAlignVertical = convertRawProp(
-      context,
-      rawProps,
-      "textAlignVertical",
-      sourceTextAttributes.textAlignVertical,
-      defaultTextAttributes.textAlignVertical);
 
   // Paragraph
   textAttributes.lineHeight = convertRawProp(
@@ -290,12 +285,6 @@ void BaseTextProps::setProp(
         defaults,
         value,
         textAttributes,
-        textAlignVertical,
-        "textAlignVertical");
-    REBUILD_FIELD_SWITCH_CASE(
-        defaults,
-        value,
-        textAttributes,
         baseWritingDirection,
         "baseWritingDirection");
     REBUILD_FIELD_SWITCH_CASE(
@@ -356,7 +345,7 @@ SharedDebugStringConvertibleList BaseTextProps::getDebugProps() const {
 }
 #endif
 
-#ifdef ANDROID
+#ifdef RN_SERIALIZABLE_STATE
 
 static folly::dynamic toDynamic(const Size& size) {
   folly::dynamic sizeResult = folly::dynamic::object();
@@ -377,12 +366,14 @@ void BaseTextProps::appendTextAttributesProps(
     result["fontFamily"] = textAttributes.fontFamily;
   }
 
-  if (textAttributes.fontSize != oldProps->textAttributes.fontSize) {
+  if (!floatEquality(
+          textAttributes.fontSize, oldProps->textAttributes.fontSize)) {
     result["fontSize"] = textAttributes.fontSize;
   }
 
-  if (textAttributes.fontSizeMultiplier !=
-      oldProps->textAttributes.fontSizeMultiplier) {
+  if (!floatEquality(
+          textAttributes.fontSizeMultiplier,
+          oldProps->textAttributes.fontSizeMultiplier)) {
     result["fontSizeMultiplier"] = textAttributes.fontSizeMultiplier;
   }
 
@@ -411,8 +402,9 @@ void BaseTextProps::appendTextAttributesProps(
         : folly::dynamic(nullptr);
   }
 
-  if (textAttributes.maxFontSizeMultiplier !=
-      oldProps->textAttributes.maxFontSizeMultiplier) {
+  if (!floatEquality(
+          textAttributes.maxFontSizeMultiplier,
+          oldProps->textAttributes.maxFontSizeMultiplier)) {
     result["maxFontSizeMultiplier"] = textAttributes.maxFontSizeMultiplier;
   }
 
@@ -423,7 +415,9 @@ void BaseTextProps::appendTextAttributesProps(
         : nullptr;
   }
 
-  if (textAttributes.letterSpacing != oldProps->textAttributes.letterSpacing) {
+  if (!floatEquality(
+          textAttributes.letterSpacing,
+          oldProps->textAttributes.letterSpacing)) {
     result["letterSpacing"] = textAttributes.letterSpacing;
   }
 
@@ -433,14 +427,8 @@ void BaseTextProps::appendTextAttributesProps(
         : nullptr;
   }
 
-  if (textAttributes.textAlignVertical !=
-      oldProps->textAttributes.textAlignVertical) {
-    result["textAlignVertical"] = textAttributes.textAlignVertical.has_value()
-        ? toString(textAttributes.textAlignVertical.value())
-        : nullptr;
-  }
-
-  if (textAttributes.lineHeight != oldProps->textAttributes.lineHeight) {
+  if (!floatEquality(
+          textAttributes.lineHeight, oldProps->textAttributes.lineHeight)) {
     result["lineHeight"] = textAttributes.lineHeight;
   }
 
@@ -500,8 +488,9 @@ void BaseTextProps::appendTextAttributesProps(
         : nullptr;
   }
 
-  if (textAttributes.textShadowRadius !=
-      oldProps->textAttributes.textShadowRadius) {
+  if (!floatEquality(
+          textAttributes.textShadowRadius,
+          oldProps->textAttributes.textShadowRadius)) {
     result["textShadowRadius"] = textAttributes.textShadowRadius;
   }
 

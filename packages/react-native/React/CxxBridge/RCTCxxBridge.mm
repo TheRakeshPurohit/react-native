@@ -23,7 +23,6 @@
 #import <React/RCTCxxUtils.h>
 #import <React/RCTDevSettings.h>
 #import <React/RCTDisplayLink.h>
-#import <React/RCTFollyConvert.h>
 #import <React/RCTJavaScriptLoader.h>
 #import <React/RCTLog.h>
 #import <React/RCTModuleData.h>
@@ -43,6 +42,7 @@
 #import <cxxreact/ReactMarker.h>
 #import <jsinspector-modern/ReactCdp.h>
 #import <jsireact/JSIExecutor.h>
+#import <react/utils/FollyConvert.h>
 #import <reactperflogger/BridgeNativeModulePerfLogger.h>
 
 #if USE_HERMES
@@ -63,6 +63,8 @@
 #if RCT_DEV_MENU && __has_include(<React/RCTDevLoadingViewProtocol.h>)
 #import <React/RCTDevLoadingViewProtocol.h>
 #endif
+
+#ifndef RCT_FIT_RM_OLD_RUNTIME
 
 static NSString *const RCTJSThreadName = @"com.facebook.react.JavaScript";
 
@@ -189,6 +191,37 @@ struct RCTInstanceCallback : public InstanceCallback {
     [bridge_ batchDidComplete];
   }
 };
+
+@interface RCTBridgeDisplayLinkModuleHolder : NSObject <RCTDisplayLinkModuleHolder>
+- (instancetype)initWithModuleData:(RCTModuleData *)moduleData;
+@end
+
+@implementation RCTBridgeDisplayLinkModuleHolder {
+  RCTModuleData *_moduleData;
+}
+
+- (instancetype)initWithModuleData:(RCTModuleData *)moduleData
+{
+  _moduleData = moduleData;
+  return self;
+}
+
+- (id<RCTBridgeModule>)instance
+{
+  return _moduleData.instance;
+}
+
+- (Class)moduleClass
+{
+  return _moduleData.moduleClass;
+}
+
+- (dispatch_queue_t)methodQueue
+{
+  return _moduleData.methodQueue;
+}
+
+@end
 
 @implementation RCTCxxBridge {
   BOOL _didInvalidate;
@@ -995,7 +1028,9 @@ struct RCTInstanceCallback : public InstanceCallback {
 
 - (void)registerModuleForFrameUpdates:(id<RCTBridgeModule>)module withModuleData:(RCTModuleData *)moduleData
 {
-  [_displayLink registerModuleForFrameUpdates:module withModuleData:moduleData];
+  id<RCTDisplayLinkModuleHolder> moduleHolder =
+      [[RCTBridgeDisplayLinkModuleHolder alloc] initWithModuleData:moduleData];
+  [_displayLink registerModuleForFrameUpdates:module withModuleHolder:moduleHolder];
 }
 
 - (void)executeSourceCode:(NSData *)sourceCode withSourceURL:(NSURL *)url sync:(BOOL)sync
@@ -1554,3 +1589,8 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithBundleURL
 }
 
 @end
+
+#else // RCT_FIT_RM_OLD_RUNTIME
+@implementation RCTCxxBridge
+@end
+#endif // RCT_FIT_RM_OLD_RUNTIME

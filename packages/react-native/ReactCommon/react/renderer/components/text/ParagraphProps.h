@@ -58,10 +58,9 @@ class ParagraphProps : public ViewProps, public BaseTextProps {
   SharedDebugStringConvertibleList getDebugProps() const override;
 #endif
 
-#ifdef ANDROID
-
+#ifdef RN_SERIALIZABLE_STATE
+  ComponentName getDiffPropsImplementationTarget() const override;
   folly::dynamic getDiffProps(const Props* prevProps) const override;
-
 #endif
 };
 
